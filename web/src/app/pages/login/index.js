@@ -1,14 +1,14 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, Layout, Typography } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import { LoginUser } from "../../../api/auth";
-import { useState } from "react";
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
 
-export default function LayoutLogin() {
+export default function LoginPage() {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const [submitErrorMsg, setSubmitErrorMsg] = useState(null)
@@ -28,6 +28,7 @@ export default function LayoutLogin() {
 
         LoginUser(email, password).then(data => {
             if (!data.Token) {
+                // todo :: check use case
                 navigate("/register");
             } else {
                 localStorage.setItem('test-token', data.Token);
@@ -74,7 +75,7 @@ export default function LayoutLogin() {
                                 Login
                             </Button>
                         </Form.Item>
-                        <Text type="danger">{submitErrorMsg}</Text>
+                        { submitErrorMsg && <Text type="danger">{submitErrorMsg}</Text> }
                     </Form>
                 </div>
             </Content>
