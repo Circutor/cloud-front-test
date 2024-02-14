@@ -1,4 +1,4 @@
-export const SERVER_ERROR_MESSAGE = 'There was an error, please try again later'
+export const SERVER_ERROR_MESSAGE = 'There was an error in the server, please try again later'
 export const UNEXPECTED_ERROR_MESSAGE = 'There was an error, please try again later'
 
 export class UnAuthorizedError extends Error {
