@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, Layout, Typography } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
-import { LoginUser } from '../api/auth';
+import { LoginUser } from "../../../api/auth";
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -21,7 +21,7 @@ export default function LayoutLogin() {
         }
 
         LoginUser(email, password).then(data => {
-            if (data.token === null) {
+            if (data.Token === null) {
                 navigate("/register");
             } else {
                 localStorage.setItem('test-token', data.Token);

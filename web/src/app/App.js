@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import LayoutRegister from '../layouts/register';
-import LayoutLogin from '../layouts/login';
+import LoginPage from './pages/login';
 import BuildingList from '../layouts/buildings_list';
 import BuildingMetrics from '../layouts/buildings_metrics'
 import BookmarksList from "../layouts/bookmarks_list";
@@ -16,7 +16,7 @@ function App() {
         <Route path="/buildings/:buildingId" element={<BuildingMetrics />} />
         <Route path="/register" element={<LayoutRegister />} />
         <Route path="home" element={<LayoutRegister />} />
-        <Route path="/login" element={<LayoutLogin />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<LayoutRegister />} />
       </Routes>
     </BrowserRouter>
