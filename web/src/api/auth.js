@@ -7,7 +7,7 @@ export async function LoginUser(_email, _pass) {
     body: JSON.stringify({ email: _email, password: _pass }),
   });
 
-  return await response;
+  return await response.json();
 }
 
 export async function RegisterUser(_email, _pass) {

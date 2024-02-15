@@ -10,24 +10,20 @@ export const useLogin = () => {
   const handleSubmit = async ({ email, password }) => {
     setLoading(true);
     LoginUser(email, password).then((data) => {
-      const { status } = data;
-      if (data) {
-        setLoading(false);
-        if (status !== 200) {
-          data.json().then(({ message }) => setError(message));
-          setTimeout(() => setError(null), 1500);
-          return;
-        }
-        if (data.token === null) {
-          navigate('/register');
-          return;
-        }
-        if (status === 200) {
-          localStorage.setItem('test-token', data.Token);
-          localStorage.setItem('email', data.Email);
-          navigate('/buildings');
-          return;
-        }
+      console.log({ data });
+      setLoading(false);
+      if (!data.Token) {
+        const { message } = data;
+        setError(message);
+        setTimeout(() => setError(null), 1500);
+        return;
+      }
+      if (data.Token) {
+        const { Token: token, Email: email } = data;
+        localStorage.setItem('test-token', token);
+        localStorage.setItem('email', email);
+        navigate('/buildings');
+        return;
       }
     });
   };
