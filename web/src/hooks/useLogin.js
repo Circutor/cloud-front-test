@@ -10,7 +10,6 @@ export const useLogin = () => {
   const handleSubmit = async ({ email, password }) => {
     setLoading(true);
     LoginUser(email, password).then((data) => {
-      console.log({ data });
       setLoading(false);
       if (!data.Token) {
         const { message } = data;
