@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { Form, Input, Layout, Typography } from 'antd';
-import { Button } from '../components';
+import { Form, Layout, Typography } from 'antd';
+import { Button, Input } from '../components';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Alert, Flex } from 'antd';
 import { useLogin } from '../hooks';
