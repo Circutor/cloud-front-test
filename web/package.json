@@ -9,9 +9,6 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.10.0",
     "@mui/x-date-pickers": "^5.0.0-beta.5",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^13.5.0",
     "antd": "^5.14.0",
     "buffer": "^6.0.3",
     "chart.js": "^3.9.1",
@@ -26,6 +23,7 @@
     "react-jwt": "^1.1.6",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "styled-components": "6.1.8",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4"
   },
@@ -53,5 +51,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "6.4.2",
+    "@testing-library/react": "14.2.1",
+    "@testing-library/react-hooks": "3.4.1",
+    "@testing-library/user-event": "14.5.2"
   }
 }

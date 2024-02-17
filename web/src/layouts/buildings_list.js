@@ -1,7 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Layout, Menu, Table, Button, Typography, Space } from 'antd';
+import { Layout, Menu, Table, Typography } from 'antd';
+import { Button } from '../components';
 import { StarOutlined, StarFilled, BarChartOutlined } from '@ant-design/icons';
 
 import { TokenIsValid } from '../api/auth';
