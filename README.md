@@ -27,6 +27,27 @@ Feel free to implement any other improvement as long as you write a test for it.
 
 ### Writing (modify this readme)
 - Write in this all red flags that you find in the code. Any examples that would stop a code review. If you want to fix some of them, go on.
+
+  - App.js and App.jsx are duped files. App.js does not hold an import to its App.css file. CRA (create-react-app), which uses react-scripts under the hood, has a very specific way of resolving files. [The order can be checked here](https://github.com/facebook/create-react-app/blob/0a827f69ab0d2ee3871ba9b71350031d8a81b7ae/packages/react-scripts/config/paths.js#L34C1-L34C6)
+    ```javascript
+    const moduleFileExtensions = [
+      'web.mjs',
+      'mjs',
+      'web.js',
+      'js',
+      'web.ts',
+      'ts',
+      'web.tsx',
+      'tsx',
+      'json',
+      'web.jsx',
+      'jsx',
+    ];
+    ```
+    So `App.js` will be resolved first before `App.jsx`. In any case, `App.css` does seem like a [template file from CRA](https://github.com/facebook/create-react-app/blob/main/packages/cra-template/template/src/App.css), which is unused. This is a red flag since App styles will not be applied (although not needed) and, obviously, having duped files is not intended. Also, although CRA doesn't care, files with JSX use the `.jsx` extension by convention.
+    
+    **SOLUTION**: Remove `App.js` and `App.css` and rename all .js files that use the JSX syntax to .jsx.
+
 - How you would make this application maintainable and scalable. Write here all the steps you would take.
 
 ## Test submission
