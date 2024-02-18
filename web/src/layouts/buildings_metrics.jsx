@@ -1,10 +1,13 @@
-import { TokenIsValid } from '../api/auth'
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Layout, Menu, Button, DatePicker, Typography, Tabs } from 'antd';
 import Moment from 'moment';
-import { GetBuildingMetrics } from '../api/buildings';
 import Chart from "react-google-charts";
+
+import {useThrottle, useWindowResize} from '../hooks'
+import { TokenIsValid } from '../api/auth'
+import { GetBuildingMetrics } from '../api/buildings';
+
 import './buildingMetrics.css';
 
 const { Header, Content } = Layout;
@@ -20,18 +23,14 @@ const BuildingMetrics = () => {
     const [interval, setInterval] = useState('daily');
     const [chartHeight, setChartHeight] = useState(0);
 
-    useEffect(() => {
-        function handleResize() {
-            setChartHeight(window.innerHeight - 65);
-        }
+    const handleResize = useCallback(() => {
+        setChartHeight(window.innerHeight - 65);
+        // setter reference is stable
+    }, [])
 
-        window.addEventListener("resize", handleResize);
-        handleResize();
+    const throttledHandleResize = useThrottle(handleResize, 100)
 
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
+    useWindowResize(throttledHandleResize, true)
 
     useEffect(() => {
         if (!TokenIsValid(localStorage.getItem('test-token'))) {

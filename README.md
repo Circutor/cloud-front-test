@@ -48,6 +48,10 @@ Feel free to implement any other improvement as long as you write a test for it.
     
     **SOLUTION**: Remove `App.js` and `App.css` and rename all .js files that use the JSX syntax to .jsx.
 
+  - Non throttling resize events. Callback will be called each time the viewport is resized, which is a performance issue.
+
+    **SOLUTION**: Throttle resize events.
+
 - How you would make this application maintainable and scalable. Write here all the steps you would take.
 
 ## Test submission
