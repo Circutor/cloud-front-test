@@ -70,6 +70,11 @@ Feel free to implement any other improvement as long as you write a test for it.
     **FOUND IN**: web/src/layouts/buildings_metrics.jsx(20)
 
     **SOLUTION**: Rename `setInterval` to `setDateInterval`
+  - Unnecessary jwt decoding.
+
+    **FOUND IN**: web/src/api/auth.js(28)
+
+    **SOLUTION**: Remove line 28.
 
 - How you would make this application maintainable and scalable. Write here all the steps you would take.
 
