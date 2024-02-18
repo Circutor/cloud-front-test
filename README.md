@@ -50,7 +50,20 @@ Feel free to implement any other improvement as long as you write a test for it.
 
   - Non throttling resize events. Callback will be called each time the viewport is resized, which is a performance issue.
 
+    **FOUND IN**: web/src/layouts/buildings_metrics.jsx(23)
+    
     **SOLUTION**: Throttle resize events.
+
+  - Navigating to current path in the history stack just after pushing it. It's a noop, doesn't do anything.
+
+      ```javascript
+      navigate("/login");
+      navigate(0);
+      ```
+
+    **FOUND IN**: web/src/layouts/buildings_metrics.jsx(39-85)
+
+    **SOLUTION**: Remove line 29.
 
 - How you would make this application maintainable and scalable. Write here all the steps you would take.
 

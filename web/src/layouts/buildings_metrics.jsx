@@ -4,7 +4,7 @@ import { Layout, Menu, Button, DatePicker, Typography, Tabs } from 'antd';
 import Moment from 'moment';
 import Chart from "react-google-charts";
 
-import {useThrottle, useWindowResize} from '../hooks'
+import { useThrottle, useWindowResize } from '../hooks'
 import { TokenIsValid } from '../api/auth'
 import { GetBuildingMetrics } from '../api/buildings';
 
@@ -35,9 +35,8 @@ const BuildingMetrics = () => {
     useEffect(() => {
         if (!TokenIsValid(localStorage.getItem('test-token'))) {
             navigate("/login");
-            navigate(0);
         }
-    }, []);
+    }, [navigate]);
 
     useEffect(() => {
         const formattedStartDate = startDate.format('YYYY-MM-DD');
@@ -58,8 +57,8 @@ const BuildingMetrics = () => {
 
     const logoutUser = () => {
         localStorage.removeItem('test-token');
+
         navigate("/login");
-        navigate(0);
     };
 
     const handleStartDateChange = date => {
@@ -76,12 +75,10 @@ const BuildingMetrics = () => {
 
     const goToBookmarks = () => {
         navigate("/bookmarks");
-        navigate(0);
     };
 
     const goToBuildings = () => {
         navigate("/buildings");
-        navigate(0);
     };
 
     return (
