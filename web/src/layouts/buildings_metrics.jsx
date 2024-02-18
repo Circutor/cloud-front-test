@@ -20,7 +20,7 @@ const BuildingMetrics = () => {
     const [data, setData] = useState([]);
     const [startDate, setStartDate] = useState(Moment('2021-01-01'));
     const [endDate, setEndDate] = useState(Moment('2022-08-01'));
-    const [interval, setInterval] = useState('daily');
+    const [dateInterval, setDateInterval] = useState('daily');
     const [chartHeight, setChartHeight] = useState(0);
 
     const handleResize = useCallback(() => {
@@ -41,7 +41,7 @@ const BuildingMetrics = () => {
     useEffect(() => {
         const formattedStartDate = startDate.format('YYYY-MM-DD');
         const formattedEndDate = endDate.format('YYYY-MM-DD');
-        GetBuildingMetrics(buildingId, formattedStartDate, formattedEndDate, interval)
+        GetBuildingMetrics(buildingId, formattedStartDate, formattedEndDate, dateInterval)
             .then(metricsData => {
                 const tmpData = [
                     [{ type: "date", label: "Day" }, "Average energy consumption"]
@@ -53,7 +53,7 @@ const BuildingMetrics = () => {
                 }
                 setData(tmpData);
             });
-    }, [buildingId, startDate, endDate, interval]);
+    }, [buildingId, startDate, endDate, dateInterval]);
 
     const logoutUser = () => {
         localStorage.removeItem('test-token');
@@ -70,7 +70,7 @@ const BuildingMetrics = () => {
     };
 
     const handleTabChange = key => {
-        setInterval(key === '2' ? 'hourly' : 'daily');
+        setDateInterval(key === '2' ? 'hourly' : 'daily');
     };
 
     const goToBookmarks = () => {
