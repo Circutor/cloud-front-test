@@ -5,7 +5,7 @@ import { Layout, Menu, Table, Button, Typography, Space } from 'antd';
 import { DeleteOutlined, BarChartOutlined } from '@ant-design/icons';
 
 import { TokenIsValid } from '../api/auth';
-import {  GetBookmarks, DeleteBookmarks } from '../api/bookmarks';
+import { GetBookmarks, DeleteBookmarks } from '../api/bookmarks';
 import { GetBuildings } from '../api/buildings';
 
 const { Header, Content } = Layout;
@@ -20,15 +20,13 @@ export default function BookmarksList() {
         if (!TokenIsValid(localStorage.getItem('test-token'))) {
             navigate("/login");
         }
-        GetBookmarks().then(bookmarks => {
-            GetBuildings().then(bld => {
-                const buildingsMap = bld.reduce((acc, curr) => {
-                    acc[curr.id] = curr;
-                    return acc;
-                }, {});
-                setBuildings(buildingsMap);
-                setRows(bookmarks);
-            });
+
+        // fetching in parallel
+        Promise.all([GetBookmarks(), GetBuildings()]).then(([bookmarks, bld]) => {
+            const buildingsMap = bld.reduce((acc, curr) => ({ ...acc, [curr.id]: curr }), {})
+
+            setBuildings(buildingsMap);
+            setRows(bookmarks);
         });
     }, [navigate]);
 
