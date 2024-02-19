@@ -1,1 +1,2 @@
-export * from './useConfig'
+export * from './config.context'
+export * from './auth.context'

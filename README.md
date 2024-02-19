@@ -63,20 +63,28 @@ Feel free to implement any other improvement as long as you write a test for it.
 
     **FOUND IN**: web/src/layouts/buildings_metrics.jsx(39-85)
 
-    **SOLUTION**: Remove line 29.
+    **SOLUTION**: Remove `navigate(0)` lines.
 
   - Variable shadowing. State setter `setInterval` shadows `window`'s `setInterval` API.
 
     **FOUND IN**: web/src/layouts/buildings_metrics.jsx(20)
 
     **SOLUTION**: Rename `setInterval` to `setDateInterval`
-  - Unnecessary jwt decoding.
+  - Docker is using 13.12.0 node version. [react-scripts@5.0.1 requires node >= 14.0.0](https://github.com/facebook/create-react-app/blob/0a827f69ab0d2ee3871ba9b71350031d8a81b7ae/packages/react-scripts/package.json#L12). Also, `react-scripts@3.4.1` is being added, not respecting the dependency tree.
 
-    **FOUND IN**: web/src/api/auth.js(28)
+    **SOLUTION**: Use LTS node version and remove react-scripts installation.
 
-    **SOLUTION**: Remove line 28.
+  - All API calls are pointing to the current window.origin (relative paths like `/login`), which is wrong since the backend is running in port 1234.
+
+    **FOUND IN**: All of web/src/api/*
+
+    **SOLUTION**: Point to http://localhost:1234/ instead of window.origin. Set endpoints by environment variables.
 
 - How you would make this application maintainable and scalable. Write here all the steps you would take.
+
+  - I've found the declarative paradigm to be the best way to keep a codebase maintainable. Abstracting away every piece of logic into reusable components/hooks avoids duplication of code and enforces both Single Responsibility and Single Source of Truth principles.
+  - Reactive global state pattern like Redux, at least for user auth, and inject each reducer into the store dynamically, or inject all reducers on first load, depends on how we want to scale. I'd just use the `redux` library and build all react bindings on top, since `useSyncExternalStore` already provides a way to sync an observer with react without tearing.
+  - Provide just `login` and `register` pages and lazily load the rest. Make use of react's `lazy` and `Suspense`.
 
 ## Test submission
 

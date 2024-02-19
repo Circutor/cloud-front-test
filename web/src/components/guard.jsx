@@ -1,7 +1,11 @@
 import { Navigate } from "react-router-dom"
 
-export function RouteGuard({ isAllowed, redirectTo, children }) {
-    if (!isAllowed) {
+import { useAuth } from "../context"
+
+export function RouteGuard({ redirectTo, children }) {
+    const { isAuthenticated } = useAuth()
+
+    if (!isAuthenticated) {
         return <Navigate to={redirectTo} />
     }
 

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Layout, Menu, Table, Button, Typography, Space } from 'antd';
 import { DeleteOutlined, BarChartOutlined } from '@ant-design/icons';
 
-import { TokenIsValid } from '../api/auth';
 import { GetBookmarks, DeleteBookmarks } from '../api/bookmarks';
 import { GetBuildings } from '../api/buildings';
 
@@ -17,10 +16,6 @@ export default function BookmarksList() {
     const [buildings, setBuildings] = useState({});
 
     useEffect(() => {
-        if (!TokenIsValid(localStorage.getItem('test-token'))) {
-            navigate("/login");
-        }
-
         // fetching in parallel
         Promise.all([GetBookmarks(), GetBuildings()]).then(([bookmarks, bld]) => {
             const buildingsMap = bld.reduce((acc, curr) => ({ ...acc, [curr.id]: curr }), {})

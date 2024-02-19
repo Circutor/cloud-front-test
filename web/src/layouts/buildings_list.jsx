@@ -20,12 +20,7 @@ const BuildingList = () => {
     const [selectedKey, setSelectedKey] = useState('');
 
     useEffect(() => {
-        if (!TokenIsValid(localStorage.getItem('test-token'))) {
-            navigate("/login");
-        }
-
-        const pathname = location.pathname;
-        setSelectedKey(pathname === '/buildings' ? 'all' : 'bookmarks');
+        setSelectedKey(location.pathname === '/buildings' ? 'all' : 'bookmarks');
 
         GetBuildings().then(data => {
             setBuildings(data);

@@ -5,8 +5,8 @@ import Moment from 'moment';
 import Chart from "react-google-charts";
 
 import { useThrottle, useWindowResize } from '../hooks'
-import { TokenIsValid } from '../api/auth'
 import { GetBuildingMetrics } from '../api/buildings';
+import { useAuth } from '../context';
 
 import './buildingMetrics.css';
 
@@ -23,6 +23,8 @@ const BuildingMetrics = () => {
     const [dateInterval, setDateInterval] = useState('daily');
     const [chartHeight, setChartHeight] = useState(0);
 
+    const auth = useAuth()
+
     const handleResize = useCallback(() => {
         setChartHeight(window.innerHeight - 65);
         // setter reference is stable
@@ -31,12 +33,6 @@ const BuildingMetrics = () => {
     const throttledHandleResize = useThrottle(handleResize, 100)
 
     useWindowResize(throttledHandleResize, true)
-
-    useEffect(() => {
-        if (!TokenIsValid(localStorage.getItem('test-token'))) {
-            navigate("/login");
-        }
-    }, [navigate]);
 
     useEffect(() => {
         const formattedStartDate = startDate.format('YYYY-MM-DD');
@@ -56,7 +52,7 @@ const BuildingMetrics = () => {
     }, [buildingId, startDate, endDate, dateInterval]);
 
     const logoutUser = () => {
-        localStorage.removeItem('test-token');
+        auth.logout()
 
         navigate("/login");
     };

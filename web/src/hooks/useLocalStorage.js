@@ -10,6 +10,10 @@ function writeToLocalStorage(key, value) {
 	window.localStorage.setItem(key, JSON.stringify(value))
 }
 
+function removeFromLocalStorage(key) {
+	window.localStorage.removeItem(key)
+}
+
 export function useLocalStorage(key, initialValue) {
 	const [storedValue, setStoredValue] = useState(
 		() => readFromLocalStorage(key) || initialValue
@@ -18,6 +22,11 @@ export function useLocalStorage(key, initialValue) {
 	const setValue = (value) => {
 		setStoredValue(value)
 		writeToLocalStorage(key, value)
+	}
+
+	const removeValue = () => {
+		setStoredValue(null)
+		removeFromLocalStorage(key)
 	}
 
 	useEffect(() => {
@@ -34,5 +43,5 @@ export function useLocalStorage(key, initialValue) {
 		}
 	}, [key])
 
-	return [storedValue, setValue]
+	return [storedValue, setValue, removeValue]
 }

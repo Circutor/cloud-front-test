@@ -3,18 +3,20 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 import App from './app/App'
-import { ConfigProvider } from './context'
+import { ConfigProvider, AuthProvider } from './context'
 
-import './app/index.css'
+import './index.css'
 
 import reportWebVitals from './reportWebVitals'
 
 function Root() {
 	return (
 		<ConfigProvider value={process.env}>
-			<Router basename="/">
-				<App />
-			</Router>
+			<AuthProvider>
+				<Router basename="/">
+					<App />
+				</Router>
+			</AuthProvider>
 		</ConfigProvider>
 	)
 }
