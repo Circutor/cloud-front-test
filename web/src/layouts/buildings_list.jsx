@@ -4,9 +4,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Layout, Menu, Table, Button, Typography } from 'antd';
 import { StarOutlined, StarFilled, BarChartOutlined } from '@ant-design/icons';
 
-import { TokenIsValid } from '../api/auth';
 import { GetBuildings } from '../api/buildings';
 import { GetBookmarks, SaveBookmarks, DeleteBookmarks } from '../api/bookmarks';
+import { useAuth } from '../context';
+
 import './buildingList.css'
 
 const { Header, Content } = Layout;
@@ -18,6 +19,8 @@ const BuildingList = () => {
     const [buildings, setBuildings] = useState([]);
     const [bookmarks, setBookmarks] = useState({});
     const [selectedKey, setSelectedKey] = useState('');
+
+    const auth = useAuth()
 
     useEffect(() => {
         setSelectedKey(location.pathname === '/buildings' ? 'all' : 'bookmarks');
@@ -88,6 +91,12 @@ const BuildingList = () => {
         });
     };
 
+    const handleLogout = () => {
+        auth.logout()
+
+        navigate("/login");
+    }
+
     return (
         <Layout className="layout" style={{ minHeight: '100vh' }}>
             <Header>
@@ -96,10 +105,7 @@ const BuildingList = () => {
                     <Menu.Item key="all" onClick={() => navigate('/buildings')}>All</Menu.Item>
                     <Menu.Item key="bookmarks" onClick={() => navigate('/bookmarks')}>Bookmarks</Menu.Item>
                 </Menu>
-                <Button type="text" style={{ color: '#fff', float: 'right' }} onClick={() => {
-                    localStorage.removeItem('test-token');
-                    navigate("/login");
-                }}>
+                <Button type="text" style={{ color: '#fff', float: 'right' }} onClick={handleLogout}>
                     Logout
                 </Button>
             </Header>

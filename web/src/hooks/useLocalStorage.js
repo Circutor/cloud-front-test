@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react'
 
+function tryParseJSON(jsonString) {
+	try {
+		const obj = JSON.parse(jsonString)
+
+		return typeof obj === 'object' ? obj : jsonString
+	} catch (e) {
+		return jsonString
+	}
+}
+
 function readFromLocalStorage(key) {
 	const item = window.localStorage.getItem(key)
 
-	return item !== null ? JSON.parse(item) : null
+	return item !== null ? tryParseJSON(item) : null
 }
 
 function writeToLocalStorage(key, value) {

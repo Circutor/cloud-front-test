@@ -1,7 +1,7 @@
 import * as jwt from 'react-jwt'
 
 export async function LoginUser(_email, _pass) {
-	const response = await fetch(`/login`, {
+	const response = await fetch(`http://localhost:1234/login`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ email: _email, password: _pass }),

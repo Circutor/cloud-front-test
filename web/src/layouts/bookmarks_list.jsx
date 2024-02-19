@@ -6,6 +6,7 @@ import { DeleteOutlined, BarChartOutlined } from '@ant-design/icons';
 
 import { GetBookmarks, DeleteBookmarks } from '../api/bookmarks';
 import { GetBuildings } from '../api/buildings';
+import { useAuth } from '../context';
 
 const { Header, Content } = Layout;
 const { Text } = Typography;
@@ -14,6 +15,8 @@ export default function BookmarksList() {
     const navigate = useNavigate();
     const [rows, setRows] = useState([]);
     const [buildings, setBuildings] = useState({});
+
+    const auth = useAuth()
 
     useEffect(() => {
         // fetching in parallel
@@ -62,6 +65,12 @@ export default function BookmarksList() {
         });
     };
 
+    const handleLogout = () => {
+        auth.logout()
+
+        navigate("/login");
+    }
+
     return (
         <Layout className="layout" style={{ minHeight: '100vh' }}>
             <Header>
@@ -70,10 +79,8 @@ export default function BookmarksList() {
                     <Menu.Item key="all" onClick={() => navigate('/buildings')}>All</Menu.Item>
                     <Menu.Item key="bookmarks" onClick={() => navigate('/bookmarks')}>Bookmarks</Menu.Item>
                 </Menu>
-                <Button type="text" style={{ color: '#fff', float: 'right' }} onClick={() => {
-                    localStorage.removeItem('test-token');
-                    navigate("/login");
-                }}>
+                <Button type="text" style={{ color: '#fff', float: 'right' }} onClick={handleLogout}>
+
                     Logout
                 </Button>
             </Header>

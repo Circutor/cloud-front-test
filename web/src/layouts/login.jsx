@@ -3,6 +3,7 @@ import { Form, Input, Button, Layout, Typography } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import { LoginUser } from '../api/auth';
+import { useAuth } from "../context";
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -10,6 +11,8 @@ const { Title } = Typography;
 export default function LayoutLogin() {
     const [form] = Form.useForm();
     const navigate = useNavigate();
+
+    const auth = useAuth()
 
     const redirectToRegister = () => {
         navigate("/register");
@@ -21,11 +24,13 @@ export default function LayoutLogin() {
         }
 
         LoginUser(email, password).then(data => {
-            if (data.token === null) {
+            const { Token: token, Email: email } = data;
+
+            if (token === null) {
                 navigate("/register");
             } else {
-                localStorage.setItem('test-token', data.Token);
-                localStorage.setItem('email', data.Email);
+                auth.login({ token, email });
+
                 navigate("/buildings");
             }
         });

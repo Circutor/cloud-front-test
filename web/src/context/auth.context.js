@@ -1,7 +1,8 @@
-import { createContext } from './utils'
-import { useLocalStorage } from '../hooks'
 import { useMemo } from 'react'
 import * as jwt from 'react-jwt'
+
+import { createContext } from './utils'
+import { useLocalStorage } from '../hooks'
 
 const [AuthContextProvider, useAuth] = createContext({
 	name: 'Auth',
@@ -11,10 +12,12 @@ const [AuthContextProvider, useAuth] = createContext({
 // context should not be used as a state manager, although these values
 // will not change often
 function AuthProvider({ children }) {
-	const [token, saveToken, removeToken] = useLocalStorage('auth', null)
+	const [email, saveEmail] = useLocalStorage('email', null)
+	const [token, saveToken, removeToken] = useLocalStorage('test-token', null)
 
-	const login = (token) => {
+	const login = ({ token, email }) => {
 		saveToken(token)
+		saveEmail(email)
 	}
 
 	const isAuthenticated = useMemo(() => {
@@ -26,14 +29,14 @@ function AuthProvider({ children }) {
 	}, [token])
 
 	const logout = () => {
-		saveToken(null)
 		removeToken()
 	}
 
 	const auth = {
-		login,
 		isAuthenticated,
+		email,
 		token,
+		login,
 		logout,
 	}
 
