@@ -1,29 +1,30 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Layout, Menu, Button, DatePicker, Typography, Tabs } from 'antd';
+import { useParams } from 'react-router-dom';
+import { Layout, DatePicker, Tabs } from 'antd';
 import Moment from 'moment';
 import Chart from "react-google-charts";
 
+import { Header } from '../components'
 import { useThrottle, useWindowResize } from '../hooks'
 import { GetBuildingMetrics } from '../api/buildings';
-import { useAuth } from '../context';
 
 import './buildingMetrics.css';
 
-const { Header, Content } = Layout;
-const { Text } = Typography;
+const { Content } = Layout;
 const { TabPane } = Tabs;
 
+const menuItems = [
+    { key: 'all', text: 'All', href: '/buildings' },
+    { key: 'bookmarks', text: 'Bookmarks', href: '/bookmarks' },
+]
+
 const BuildingMetrics = () => {
-    const navigate = useNavigate();
     const { buildingId } = useParams();
     const [data, setData] = useState([]);
     const [startDate, setStartDate] = useState(Moment('2021-01-01'));
     const [endDate, setEndDate] = useState(Moment('2022-08-01'));
     const [dateInterval, setDateInterval] = useState('daily');
     const [chartHeight, setChartHeight] = useState(0);
-
-    const auth = useAuth()
 
     const handleResize = useCallback(() => {
         setChartHeight(window.innerHeight - 65);
@@ -51,12 +52,6 @@ const BuildingMetrics = () => {
             });
     }, [buildingId, startDate, endDate, dateInterval]);
 
-    const logoutUser = () => {
-        auth.logout()
-
-        navigate("/login");
-    };
-
     const handleStartDateChange = date => {
         setStartDate(date);
     };
@@ -68,27 +63,9 @@ const BuildingMetrics = () => {
     const handleTabChange = key => {
         setDateInterval(key === '2' ? 'hourly' : 'daily');
     };
-
-    const goToBookmarks = () => {
-        navigate("/bookmarks");
-    };
-
-    const goToBuildings = () => {
-        navigate("/buildings");
-    };
-
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <Header>
-                <Text style={{ color: '#fff' }}>My Buildings</Text>
-                <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['metrics']}>
-                    <Menu.Item key="all" onClick={goToBuildings}>All</Menu.Item>
-                    <Menu.Item key="bookmarks" onClick={goToBookmarks}>Bookmarks</Menu.Item>
-                </Menu>
-                <Button type="text" style={{ color: '#fff', float: 'right' }} onClick={logoutUser}>
-                    Logout
-                </Button>
-            </Header>
+            <Header items={menuItems} defaultSelectedKey="metrics" title="My Buildings" />
             <Content className="content-wrapper">
                 <div className="date-picker-wrapper">
                     <DatePicker value={startDate} onChange={handleStartDateChange} />

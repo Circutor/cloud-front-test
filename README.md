@@ -80,11 +80,23 @@ Feel free to implement any other improvement as long as you write a test for it.
 
     **SOLUTION**: Point to http://localhost:1234/ instead of window.origin. Set endpoints by environment variables.
 
+  - Accessing token with `token`, not `Token`.
+
+    **FOUND IN**: web/src/layouts/login.jsx(24)
+
+    **SOLUTION**: Rename to `Token`.
+
+  - Not allowed Authorization header.
+
+    **FOUND IN**: api/main.go(77)
+
 - How you would make this application maintainable and scalable. Write here all the steps you would take.
 
   - I've found the declarative paradigm to be the best way to keep a codebase maintainable. Abstracting away every piece of logic into reusable components/hooks avoids duplication of code and enforces both Single Responsibility and Single Source of Truth principles.
   - Reactive global state pattern like Redux, at least for user auth, and inject each reducer into the store dynamically, or inject all reducers on first load, depends on how we want to scale. I'd just use the `redux` library and build all react bindings on top, since `useSyncExternalStore` already provides a way to sync an observer with react without tearing.
   - Provide just `login` and `register` pages and lazily load the rest. Make use of react's `lazy` and `Suspense`.
+  - Add localization (i18n).
+  - Move to a more robust styling solution, like preprocessors (`SASS`) or css-in-js (`styled-components`).
 
 ## Test submission
 

@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
-import { Redirect, RouteGuard } from '../components'
+import { RouteGuard } from '../components'
 
 import LayoutRegister from '../layouts/register';
 import LayoutLogin from '../layouts/login';

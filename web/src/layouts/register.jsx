@@ -17,7 +17,9 @@ const LayoutRegister = () => {
     const onFinish = (values) => {
         const { email, password } = values;
         RegisterUser(email, password).then(data => {
-            if (data.token === null) {
+            const { Token: token } = data;
+
+            if (token === null) {
                 navigate("/register");
             } else {
                 navigate("/login");

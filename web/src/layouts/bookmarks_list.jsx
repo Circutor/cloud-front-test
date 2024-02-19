@@ -1,22 +1,23 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout, Menu, Table, Button, Typography, Space } from 'antd';
+import { Layout, Table, Button, Space } from 'antd';
 import { DeleteOutlined, BarChartOutlined } from '@ant-design/icons';
 
 import { GetBookmarks, DeleteBookmarks } from '../api/bookmarks';
 import { GetBuildings } from '../api/buildings';
-import { useAuth } from '../context';
+import { Header } from '../components'
 
-const { Header, Content } = Layout;
-const { Text } = Typography;
+const { Content } = Layout;
+
+const menuItems = [
+    { key: "all", href: "/buildings", text: "All" },
+    { key: "bookmarks", href: "/bookmarks", text: "Bookmarks" }
+]
 
 export default function BookmarksList() {
     const navigate = useNavigate();
     const [rows, setRows] = useState([]);
     const [buildings, setBuildings] = useState({});
-
-    const auth = useAuth()
 
     useEffect(() => {
         // fetching in parallel
@@ -65,25 +66,9 @@ export default function BookmarksList() {
         });
     };
 
-    const handleLogout = () => {
-        auth.logout()
-
-        navigate("/login");
-    }
-
     return (
         <Layout className="layout" style={{ minHeight: '100vh' }}>
-            <Header>
-                <Text style={{ color: '#fff' }}>My Buildings</Text>
-                <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['bookmarks']} style={{ float: 'right' }}>
-                    <Menu.Item key="all" onClick={() => navigate('/buildings')}>All</Menu.Item>
-                    <Menu.Item key="bookmarks" onClick={() => navigate('/bookmarks')}>Bookmarks</Menu.Item>
-                </Menu>
-                <Button type="text" style={{ color: '#fff', float: 'right' }} onClick={handleLogout}>
-
-                    Logout
-                </Button>
-            </Header>
+            <Header defaultSelectedKey="bookmarks" items={menuItems} title="My Buildings" />
             <Content style={{ padding: '24px' }}>
                 <Table columns={columns} dataSource={rows} rowKey="ID" />
             </Content>
