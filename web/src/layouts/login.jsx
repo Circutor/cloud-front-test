@@ -66,20 +66,20 @@ export default function LayoutLogin() {
                             name="email"
                             rules={[{ required: true, message: 'Please input your Email!' }]}
                         >
-                            <Input prefix={<UserOutlined />} placeholder="Email" />
+                            <Input prefix={<UserOutlined />} placeholder="Email" data-testid="login-form-email" />
                         </Form.Item>
                         <Form.Item
                             name="password"
                             rules={[{ required: true, message: 'Please input your Password!' }]}
                         >
-                            <Input.Password prefix={<LockOutlined />} placeholder="Password" />
+                            <Input.Password prefix={<LockOutlined />} placeholder="Password" data-testid="login-form-password" />
                         </Form.Item>
                         <Form.Item status={loginState.error ? 'error' : ''}>
-                            <Button type="primary" htmlType="submit" style={{ width: '100%' }} loading={loginState.loading} danger={!!loginState.error}>
+                            <Button type="primary" htmlType="submit" style={{ width: '100%' }} loading={loginState.loading} danger={!!loginState.error} data-testid="login-form-submit">
                                 Login
                             </Button>
                         </Form.Item>
-                        {loginState.error && <Text type="danger">{loginState.error}</Text>}
+                        {loginState.error && <Text type="danger" data-testid="login-form-error-text">Error: {loginState.error}</Text>}
                     </Form>
                 </div>
             </Content>

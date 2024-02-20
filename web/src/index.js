@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 import App from './app/App'
-import { ConfigProvider, AuthProvider } from './context'
+import { ConfigProvider, AuthProvider, ThemeProvider } from './context'
 
 import './index.css'
 
@@ -13,9 +13,11 @@ function Root() {
 	return (
 		<ConfigProvider value={process.env}>
 			<AuthProvider>
-				<Router basename="/">
-					<App />
-				</Router>
+				<ThemeProvider>
+					<Router basename="/">
+						<App />
+					</Router>
+				</ThemeProvider>
 			</AuthProvider>
 		</ConfigProvider>
 	)
