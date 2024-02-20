@@ -7,6 +7,7 @@ import Chart from "react-google-charts";
 import { Header } from '../components'
 import { useThrottle, useWindowResize } from '../hooks'
 import { GetBuildingMetrics } from '../api/buildings';
+import { useAuth } from '../context';
 
 import './buildingMetrics.css';
 
@@ -26,6 +27,8 @@ const BuildingMetrics = () => {
     const [dateInterval, setDateInterval] = useState('daily');
     const [chartHeight, setChartHeight] = useState(0);
 
+    const { token } = useAuth()
+
     const handleResize = useCallback(() => {
         setChartHeight(window.innerHeight - 65);
         // setter reference is stable
@@ -38,7 +41,7 @@ const BuildingMetrics = () => {
     useEffect(() => {
         const formattedStartDate = startDate.format('YYYY-MM-DD');
         const formattedEndDate = endDate.format('YYYY-MM-DD');
-        GetBuildingMetrics(buildingId, formattedStartDate, formattedEndDate, dateInterval)
+        GetBuildingMetrics(buildingId, formattedStartDate, formattedEndDate, dateInterval, token)
             .then(metricsData => {
                 const tmpData = [
                     [{ type: "date", label: "Day" }, "Average energy consumption"]

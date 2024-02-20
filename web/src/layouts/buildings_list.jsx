@@ -6,6 +6,7 @@ import { StarOutlined, StarFilled, BarChartOutlined } from '@ant-design/icons';
 import { GetBuildings } from '../api/buildings';
 import { GetBookmarks, SaveBookmarks, DeleteBookmarks } from '../api/bookmarks';
 import { Header } from '../components'
+import { useAuth } from '../context';
 
 import './buildingList.css'
 
@@ -22,16 +23,17 @@ const BuildingList = () => {
     const [buildings, setBuildings] = useState([]);
     const [bookmarks, setBookmarks] = useState({});
 
+    const { token } = useAuth();
+
     useEffect(() => {
-        GetBuildings().then(data => {
-            setBuildings(data);
-            GetBookmarks().then(bld => {
-                const bookmarksMap = bld.reduce((acc, curr) => {
-                    acc[curr.BuildingId] = curr;
-                    return acc;
-                }, {});
-                setBookmarks(bookmarksMap);
-            });
+        Promise.all([GetBuildings(token), GetBookmarks(token)]).then(([bld, bkm]) => {
+            setBuildings(bld);
+
+            const bookmarksMap = bkm.reduce((acc, curr) => {
+                acc[curr.BuildingId] = curr;
+                return acc;
+            }, {});
+            setBookmarks(bookmarksMap);
         });
     }, [navigate, location.pathname]);
 
@@ -70,17 +72,17 @@ const BuildingList = () => {
     };
 
     const saveBookmark = (id) => {
-        SaveBookmarks(id).then(() => updateBookmarks());
+        SaveBookmarks(id, token).then(() => updateBookmarks());
     };
 
     const deleteBookmark = (id) => {
         if (bookmarks[id]) {
-            DeleteBookmarks(bookmarks[id].ID).then(() => updateBookmarks());
+            DeleteBookmarks(bookmarks[id].ID, token).then(() => updateBookmarks());
         }
     };
 
     const updateBookmarks = () => {
-        GetBookmarks().then(bld => {
+        GetBookmarks(token).then(bld => {
             const bookmarksMap = bld.reduce((acc, curr) => {
                 acc[curr.BuildingId] = curr;
                 return acc;

@@ -97,6 +97,7 @@ Feel free to implement any other improvement as long as you write a test for it.
   - Provide just `login` and `register` pages and lazily load the rest. Make use of react's `lazy` and `Suspense`.
   - Add localization (i18n).
   - Move to a more robust styling solution, like preprocessors (`SASS`) or css-in-js (`styled-components`).
+  - Add pagination to all the tables.
 
 ## Test submission
 

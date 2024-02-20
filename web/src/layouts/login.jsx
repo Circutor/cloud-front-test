@@ -3,27 +3,22 @@ import { Form, Input, Button, Layout, Typography } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import { LoginUser } from '../api/auth';
-import { useAuth } from "../context";
+import { useAuth, useConfig } from "../context";
+import { useMutate } from "../hooks";
 
 const { Header, Content } = Layout;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 export default function LayoutLogin() {
     const [form] = Form.useForm();
     const navigate = useNavigate();
 
-    const auth = useAuth()
+    const { REACT_APP_POST_LOGIN: loginUrl } = useConfig()
 
-    const redirectToRegister = () => {
-        navigate("/register");
-    };
-
-    const onFinish = ({ email, password }) => {
-        if (!email || !password) {
-            return;
-        }
-
-        LoginUser(email, password).then(data => {
+    const [loginState, mutateLogin] = useMutate({
+        url: loginUrl,
+        method: 'POST',
+        onSuccess(data) {
             const { Token: token, Email: email } = data;
 
             if (token === null) {
@@ -33,7 +28,21 @@ export default function LayoutLogin() {
 
                 navigate("/buildings");
             }
-        });
+        }
+    })
+
+    const auth = useAuth()
+
+    const redirectToRegister = () => {
+        navigate("/register");
+    };
+
+    const onFinish = async ({ email, password }) => {
+        if (!email || !password) {
+            return;
+        }
+
+        await mutateLogin({ email, password })
     };
 
     return (
@@ -65,11 +74,12 @@ export default function LayoutLogin() {
                         >
                             <Input.Password prefix={<LockOutlined />} placeholder="Password" />
                         </Form.Item>
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+                        <Form.Item status={loginState.error ? 'error' : ''}>
+                            <Button type="primary" htmlType="submit" style={{ width: '100%' }} loading={loginState.loading} danger={!!loginState.error}>
                                 Login
                             </Button>
                         </Form.Item>
+                        {loginState.error && <Text type="danger">{loginState.error}</Text>}
                     </Form>
                 </div>
             </Content>

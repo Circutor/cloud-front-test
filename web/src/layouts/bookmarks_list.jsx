@@ -6,6 +6,7 @@ import { DeleteOutlined, BarChartOutlined } from '@ant-design/icons';
 import { GetBookmarks, DeleteBookmarks } from '../api/bookmarks';
 import { GetBuildings } from '../api/buildings';
 import { Header } from '../components'
+import { useAuth } from '../context';
 
 const { Content } = Layout;
 
@@ -19,9 +20,11 @@ export default function BookmarksList() {
     const [rows, setRows] = useState([]);
     const [buildings, setBuildings] = useState({});
 
+    const { token } = useAuth();
+
     useEffect(() => {
         // fetching in parallel
-        Promise.all([GetBookmarks(), GetBuildings()]).then(([bookmarks, bld]) => {
+        Promise.all([GetBookmarks(token), GetBuildings(token)]).then(([bookmarks, bld]) => {
             const buildingsMap = bld.reduce((acc, curr) => ({ ...acc, [curr.id]: curr }), {})
 
             setBuildings(buildingsMap);
@@ -59,8 +62,8 @@ export default function BookmarksList() {
     ];
 
     const deleteBookmark = (id) => {
-        DeleteBookmarks(id).then(() => {
-            GetBookmarks().then(data => {
+        DeleteBookmarks(id, token).then(() => {
+            GetBookmarks(token).then(data => {
                 setRows(data);
             });
         });
