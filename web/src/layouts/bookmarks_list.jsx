@@ -1,34 +1,34 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout, Menu, Table, Button, Typography, Space } from 'antd';
+import { Layout, Table, Button, Space } from 'antd';
 import { DeleteOutlined, BarChartOutlined } from '@ant-design/icons';
 
-import { TokenIsValid } from '../api/auth';
-import {  GetBookmarks, DeleteBookmarks } from '../api/bookmarks';
+import { GetBookmarks, DeleteBookmarks } from '../api/bookmarks';
 import { GetBuildings } from '../api/buildings';
+import { Header } from '../components'
+import { useAuth } from '../context';
 
-const { Header, Content } = Layout;
-const { Text } = Typography;
+const { Content } = Layout;
+
+const menuItems = [
+    { key: "all", href: "/buildings", text: "All" },
+    { key: "bookmarks", href: "/bookmarks", text: "Bookmarks" }
+]
 
 export default function BookmarksList() {
     const navigate = useNavigate();
     const [rows, setRows] = useState([]);
     const [buildings, setBuildings] = useState({});
 
+    const { token } = useAuth();
+
     useEffect(() => {
-        if (!TokenIsValid(localStorage.getItem('test-token'))) {
-            navigate("/login");
-        }
-        GetBookmarks().then(bookmarks => {
-            GetBuildings().then(bld => {
-                const buildingsMap = bld.reduce((acc, curr) => {
-                    acc[curr.id] = curr;
-                    return acc;
-                }, {});
-                setBuildings(buildingsMap);
-                setRows(bookmarks);
-            });
+        // fetching in parallel
+        Promise.all([GetBookmarks(token), GetBuildings(token)]).then(([bookmarks, bld]) => {
+            const buildingsMap = bld.reduce((acc, curr) => ({ ...acc, [curr.id]: curr }), {})
+
+            setBuildings(buildingsMap);
+            setRows(bookmarks);
         });
     }, [navigate]);
 
@@ -62,8 +62,8 @@ export default function BookmarksList() {
     ];
 
     const deleteBookmark = (id) => {
-        DeleteBookmarks(id).then(() => {
-            GetBookmarks().then(data => {
+        DeleteBookmarks(id, token).then(() => {
+            GetBookmarks(token).then(data => {
                 setRows(data);
             });
         });
@@ -71,19 +71,7 @@ export default function BookmarksList() {
 
     return (
         <Layout className="layout" style={{ minHeight: '100vh' }}>
-            <Header>
-                <Text style={{ color: '#fff' }}>My Buildings</Text>
-                <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['bookmarks']} style={{ float: 'right' }}>
-                    <Menu.Item key="all" onClick={() => navigate('/buildings')}>All</Menu.Item>
-                    <Menu.Item key="bookmarks" onClick={() => navigate('/bookmarks')}>Bookmarks</Menu.Item>
-                </Menu>
-                <Button type="text" style={{ color: '#fff', float: 'right' }} onClick={() => {
-                    localStorage.removeItem('test-token');
-                    navigate("/login");
-                }}>
-                    Logout
-                </Button>
-            </Header>
+            <Header defaultSelectedKey="bookmarks" items={menuItems} title="My Buildings" />
             <Content style={{ padding: '24px' }}>
                 <Table columns={columns} dataSource={rows} rowKey="ID" />
             </Content>

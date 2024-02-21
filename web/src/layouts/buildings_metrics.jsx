@@ -1,49 +1,47 @@
-import { TokenIsValid } from '../api/auth'
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Layout, Menu, Button, DatePicker, Typography, Tabs } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Layout, DatePicker, Tabs } from 'antd';
 import Moment from 'moment';
-import { GetBuildingMetrics } from '../api/buildings';
 import Chart from "react-google-charts";
+
+import { Header } from '../components'
+import { useThrottle, useWindowResize } from '../hooks'
+import { GetBuildingMetrics } from '../api/buildings';
+import { useAuth } from '../context';
+
 import './buildingMetrics.css';
 
-const { Header, Content } = Layout;
-const { Text } = Typography;
+const { Content } = Layout;
 const { TabPane } = Tabs;
 
+const menuItems = [
+    { key: 'all', text: 'All', href: '/buildings' },
+    { key: 'bookmarks', text: 'Bookmarks', href: '/bookmarks' },
+]
+
 const BuildingMetrics = () => {
-    const navigate = useNavigate();
     const { buildingId } = useParams();
     const [data, setData] = useState([]);
     const [startDate, setStartDate] = useState(Moment('2021-01-01'));
     const [endDate, setEndDate] = useState(Moment('2022-08-01'));
-    const [interval, setInterval] = useState('daily');
+    const [dateInterval, setDateInterval] = useState('daily');
     const [chartHeight, setChartHeight] = useState(0);
 
-    useEffect(() => {
-        function handleResize() {
-            setChartHeight(window.innerHeight - 65);
-        }
+    const { token } = useAuth()
 
-        window.addEventListener("resize", handleResize);
-        handleResize();
+    const handleResize = useCallback(() => {
+        setChartHeight(window.innerHeight - 65);
+        // setter reference is stable
+    }, [])
 
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
+    const throttledHandleResize = useThrottle(handleResize, 100)
 
-    useEffect(() => {
-        if (!TokenIsValid(localStorage.getItem('test-token'))) {
-            navigate("/login");
-            navigate(0);
-        }
-    }, []);
+    useWindowResize(throttledHandleResize, true)
 
     useEffect(() => {
         const formattedStartDate = startDate.format('YYYY-MM-DD');
         const formattedEndDate = endDate.format('YYYY-MM-DD');
-        GetBuildingMetrics(buildingId, formattedStartDate, formattedEndDate, interval)
+        GetBuildingMetrics(buildingId, formattedStartDate, formattedEndDate, dateInterval, token)
             .then(metricsData => {
                 const tmpData = [
                     [{ type: "date", label: "Day" }, "Average energy consumption"]
@@ -55,13 +53,7 @@ const BuildingMetrics = () => {
                 }
                 setData(tmpData);
             });
-    }, [buildingId, startDate, endDate, interval]);
-
-    const logoutUser = () => {
-        localStorage.removeItem('test-token');
-        navigate("/login");
-        navigate(0);
-    };
+    }, [buildingId, startDate, endDate, dateInterval]);
 
     const handleStartDateChange = date => {
         setStartDate(date);
@@ -72,31 +64,11 @@ const BuildingMetrics = () => {
     };
 
     const handleTabChange = key => {
-        setInterval(key === '2' ? 'hourly' : 'daily');
+        setDateInterval(key === '2' ? 'hourly' : 'daily');
     };
-
-    const goToBookmarks = () => {
-        navigate("/bookmarks");
-        navigate(0);
-    };
-
-    const goToBuildings = () => {
-        navigate("/buildings");
-        navigate(0);
-    };
-
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <Header>
-                <Text style={{ color: '#fff' }}>My Buildings</Text>
-                <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['metrics']}>
-                    <Menu.Item key="all" onClick={goToBuildings}>All</Menu.Item>
-                    <Menu.Item key="bookmarks" onClick={goToBookmarks}>Bookmarks</Menu.Item>
-                </Menu>
-                <Button type="text" style={{ color: '#fff', float: 'right' }} onClick={logoutUser}>
-                    Logout
-                </Button>
-            </Header>
+            <Header items={menuItems} defaultSelectedKey="metrics" title="My Buildings" />
             <Content className="content-wrapper">
                 <div className="date-picker-wrapper">
                     <DatePicker value={startDate} onChange={handleStartDateChange} />
